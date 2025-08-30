@@ -27,6 +27,11 @@
 // #define KP_BAL 0.34
 // #define KP_DIST 0.002
 
+#define ROW  24
+#define COL  24   // maze size
+#define CELL  30  // pixel size of each cell
+#define endr  16
+#define endc  16
 
 #define FRONT_WALL_THRESHOLD 160
 #define SIDE_WALL_THRESHOLD 160
