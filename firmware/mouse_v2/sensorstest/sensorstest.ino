@@ -9,7 +9,7 @@
 #define LEFT_ECHO A5
 
 // RIGHT SENSOR
-#define RIGHT_TRIG 5
+#define RIGHT_TRIG 6
 #define RIGHT_ECHO 12
 
 
