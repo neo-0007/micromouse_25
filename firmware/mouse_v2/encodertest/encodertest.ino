@@ -5,7 +5,7 @@
 #define IN1 8
 #define IN2 11
 
-#define ENB 6
+#define ENB 9
 #define IN3 A0
 #define IN4 A1
 
@@ -142,5 +142,5 @@ void loop() {
   Serial.println(rightTicks);
 
   Serial.println("------------------");
-  delay(3000);
+  delay(15000);
 }

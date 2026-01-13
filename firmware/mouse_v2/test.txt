@@ -1,0 +1,225 @@
+#include "motors.h"
+#include "encoders.h"
+#include "motion.h"
+#include "config.h"
+
+// Create motor objects
+Motor leftMotor(IN2, IN1, ENA);
+Motor rightMotor(IN3, IN4, ENB);
+
+// Create encoder objects
+Encoder leftEncoder(LEFT_ENC_A, LEFT_ENC_B);
+Encoder rightEncoder(RIGHT_ENC_A, RIGHT_ENC_B);
+
+// Test state machine
+enum TestState {
+  WAITING,
+  TEST_FORWARD,
+  TEST_RIGHT_90,
+  TEST_LEFT_90,
+  TEST_180,
+  TEST_BACKWARD,
+  COMPLETED
+};
+
+TestState currentTest = WAITING;
+unsigned long testStartTime = 0;
+
+void setup() {
+  Serial.begin(9600);
+  
+  // Initialize motors
+  leftMotor.init();
+  rightMotor.init();
+  
+  // Initialize encoders
+  leftEncoder.init();
+  rightEncoder.init();
+  
+  
+  Serial.println("=== Motion Test System ===");
+  Serial.println("Commands:");
+  Serial.println("  1 - Test Forward (2 seconds)");
+  Serial.println("  2 - Test Right 90 degrees");
+  Serial.println("  3 - Test Left 90 degrees");
+  Serial.println("  4 - Test 180 degrees");
+  Serial.println("  5 - Test Backward (2 seconds)");
+  Serial.println("  6 - Run All Tests");
+  Serial.println("  s - Stop motors");
+  Serial.println("  r - Reset encoders");
+  Serial.println("  e - Show encoder values");
+  Serial.println();
+  Serial.println("Ready. Enter a command:");
+}
+
+void loop() {
+  // Check for serial commands
+  if (Serial.available() > 0) {
+    char command = Serial.read();
+    
+    switch (command) {
+      case '1':
+        testForward();
+        break;
+        
+      case '2':
+        testRight90();
+        break;
+        
+      case '3':
+        testLeft90();
+        break;
+        
+      case '4':
+        test180();
+        break;
+        
+      case '5':
+        testBackward();
+        break;
+        
+      case 's':
+      case 'S':
+        leftMotor.stop();
+        rightMotor.stop();
+        Serial.println("Motors stopped.");
+        break;
+        
+      case 'r':
+      case 'R':
+        leftEncoder.reset();
+        rightEncoder.reset();
+        Serial.println("Encoders reset.");
+        break;
+        
+      case 'e':
+      case 'E':
+        showEncoderValues();
+        break;
+        
+      default:
+        // Ignore newlines and other characters
+        break;
+    }
+  }
+}
+
+void testForward() {
+  Serial.println("\n--- Testing Forward Movement ---");
+  Serial.println("Moving forward for 2 seconds at speed 150");
+  leftEncoder.reset();
+  rightEncoder.reset();
+  
+  leftMotor.moveForward(130);
+  rightMotor.moveForward(130);
+  delay(2000);
+  
+  leftMotor.stop();
+  rightMotor.stop();
+  
+  Serial.println("Test complete.");
+  showEncoderValues();
+  Serial.println("Check if robot moved straight.");
+  Serial.println();
+}
+
+void testBackward() {
+  Serial.println("\n--- Testing Backward Movement ---");
+  Serial.println("Moving backward for 2 seconds at speed 150");
+  leftEncoder.reset();
+  rightEncoder.reset();
+  
+  leftMotor.moveBackward(90);
+  rightMotor.moveBackward(130);
+  delay(2000);
+  
+  leftMotor.stop();
+  rightMotor.stop();
+  
+  Serial.println("Test complete.");
+  showEncoderValues();
+  Serial.println("Check if robot moved straight.");
+  Serial.println();
+}
+
+void testRight90() {
+  Serial.println("\n--- Testing Right 90° Turn ---");
+  Serial.println("Place a protractor or mark the starting position.");
+  Serial.println("Starting turn in 3 seconds...");
+  delay(3000);
+  
+  leftEncoder.reset();
+  rightEncoder.reset();
+  
+  Serial.println("Turning RIGHT 90 degrees...");
+  // TODO
+  
+  Serial.println("Turn complete!");
+  showEncoderValues();
+  Serial.println("Measure the actual angle turned.");
+  Serial.println("If not exactly 90°, calculate new ticks/degree:");
+  Serial.println("  New value = 27.8 × (90 / actual_angle)");
+  Serial.println();
+}
+
+void testLeft90() {
+  Serial.println("\n--- Testing Left 90° Turn ---");
+  Serial.println("Place a protractor or mark the starting position.");
+  Serial.println("Starting turn in 3 seconds...");
+  delay(3000);
+  
+  leftEncoder.reset();
+  rightEncoder.reset();
+  
+  Serial.println("Turning LEFT 90 degrees...");
+  // TODO
+  
+  Serial.println("Turn complete!");
+  showEncoderValues();
+  Serial.println("Measure the actual angle turned.");
+  Serial.println();
+}
+
+void test180() {
+  Serial.println("\n--- Testing 180° Turn ---");
+  Serial.println("Place a protractor or mark the starting position.");
+  Serial.println("Starting turn in 3 seconds...");
+  delay(3000);
+  
+  leftEncoder.reset();
+  rightEncoder.reset();
+  
+  Serial.println("Turning 180 degrees...");
+  // TODO
+  
+  Serial.println("Turn complete!");
+  showEncoderValues();
+  Serial.println("Robot should be facing opposite direction.");
+  Serial.println();
+}
+
+
+void showEncoderValues() {
+  long leftTicks = leftEncoder.getTicks();
+  long rightTicks = rightEncoder.getTicks();
+  
+  Serial.print("Left Encoder:  ");
+  Serial.print(leftTicks);
+  Serial.println(" ticks");
+  
+  Serial.print("Right Encoder: ");
+  Serial.print(rightTicks);
+  Serial.println(" ticks");
+  
+  Serial.print("Difference:    ");
+  Serial.print(abs(leftTicks - rightTicks));
+  Serial.println(" ticks");
+  
+  if (leftTicks != 0 || rightTicks != 0) {
+    float avgTicks = (abs(leftTicks) + abs(rightTicks)) / 2.0;
+    float estimatedAngle = avgTicks / 27.8;
+    Serial.print("Estimated angle turned: ");
+    Serial.print(estimatedAngle, 1);
+    Serial.println("°");
+  }
+}

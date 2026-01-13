@@ -33,9 +33,9 @@ void Encoder::init()
 void Encoder::handleISR()
 {
     if (digitalRead(pinB))
-        ticks--;
-    else
         ticks++;
+    else
+        ticks--;
 }
 
 // Static ISR wrappers

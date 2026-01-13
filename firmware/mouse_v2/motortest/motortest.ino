@@ -1,11 +1,13 @@
 
+// LEFT MOTOR
 #define ENA 10
-#define IN1 8 // LEFT BACK
-#define IN2 11 // LEFT FRONT 
+#define IN1 8      // LEFT BACK
+#define IN2 11     // LEFT FRONT
 
-#define ENB 6
-#define IN3 A0 // RIGHT FRONT
-#define IN4 A1 // RIGHT BACK
+// RIGHT MOTOR
+#define ENB 9
+#define IN3 A0     // RIGHT FRONT
+#define IN4 A1     // RIGHT BACKBACK
 
 
 void setup() {

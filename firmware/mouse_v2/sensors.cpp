@@ -4,7 +4,6 @@ UltrasonicSensor::UltrasonicSensor(uint8_t trigPin, uint8_t echoPin)
 {
     this->trigPin = trigPin;
     this->echoPin = echoPin;
-    state = IDLE;
     distanceCm = -1;
 }
 
@@ -17,62 +16,34 @@ void UltrasonicSensor::init()
 
 void UltrasonicSensor::update()
 {
-    unsigned long nowMicros = micros();
-    unsigned long nowMillis = millis();
-
-    switch (state)
-    {
-        case IDLE:
-            // Start a new ping
-            digitalWrite(trigPin, HIGH);
-            tMicros = nowMicros;
-            state = TRIGGER_PULSE;
-            break;
-
-        case TRIGGER_PULSE:
-            if (nowMicros - tMicros >= 10) {   // 10 µs pulse
-                digitalWrite(trigPin, LOW);
-                tMicros = nowMicros;
-                state = WAIT_RISE;
-            }
-            break;
-
-        case WAIT_RISE:
-            if (digitalRead(echoPin)) {
-                echoStart = micros();
-                state = WAIT_FALL;
-            }
-            else if (nowMicros - tMicros > 30000) { // 30 ms timeout
-                distanceCm = -1;
-                tMillis = nowMillis;
-                state = COOLDOWN;
-            }
-            break;
-
-        case WAIT_FALL:
-            if (!digitalRead(echoPin)) {
-                unsigned long duration = micros() - echoStart;
-                distanceCm = duration * 0.034 / 2;
-                tMillis = nowMillis;
-                state = COOLDOWN;
-            }
-            else if (nowMicros - echoStart > 30000) {
-                distanceCm = -1;
-                tMillis = nowMillis;
-                state = COOLDOWN;
-            }
-            break;
-
-        case COOLDOWN:
-            // Wait before next trigger (prevents crosstalk)
-            if (nowMillis - tMillis >= 40) {
-                state = IDLE;
-            }
-            break;
-    }
+    // Non blocking
+    // TODO
 }
 
 long UltrasonicSensor::getDistance()
 {
+    return getDistanceBlocking(); // Will upgrade later
+}
+
+long UltrasonicSensor::getDistanceBlocking()
+{
+    // Ensure clean trigger
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);
+    
+    // Send 10us pulse
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
+    
+    // Read echo (timeout 30ms ≈ 5m)
+    unsigned long duration = pulseIn(echoPin, HIGH, 30000);
+    
+    if (duration == 0) {
+        return -1; 
+    }
+    
+    // Calculate distance in cm
+    distanceCm = duration * 0.034 / 2;
     return distanceCm;
 }
