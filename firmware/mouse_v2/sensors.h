@@ -10,7 +10,8 @@ public:
 
     void init();
     void update();          // Not used now
-    long getDistance();    
+    long getDistance();
+    long UltrasonicSensor::getDistanceBlocking();    
 
 private:
     uint8_t trigPin;

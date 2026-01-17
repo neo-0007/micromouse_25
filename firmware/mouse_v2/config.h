@@ -41,12 +41,13 @@
 #define RIGHT_ECHO 12
 
 
-#define TURN_90_TICKS 220
-#define TURN_180_TICKS 440
+#define LEFT_TURN_90_TICKS 190
+#define RIGHT_TURN_90_TICKS 190
+#define TURN_180_TICKS 540
 
 
-#define FRONT_WALL_DIST   10   // cm 
-#define SIDE_WALL_DIST    15   // cm
-#define BACK_TICKS        200  // encoder ticks for back move
+#define FRONT_WALL_DIST   7   // cm 
+#define SIDE_WALL_DIST    19  // cm
+#define BACK_TICKS        500  // encoder ticks for back move
 
 #endif // CONFIG_H
