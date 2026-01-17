@@ -612,7 +612,8 @@ UltrasonicSensor leftSensor(LEFT_TRIG, LEFT_ECHO);
 UltrasonicSensor rightSensor(RIGHT_TRIG, RIGHT_ECHO);
 
 // ================= PARAMETERS =================
-int baseSpeed = 100;
+int baseSpeed = 180;
+int baseSpeedBack = 80;
 
 int leftEncoderCount = 0;
 int rightEncoderCount = 0;
@@ -908,7 +909,7 @@ void moveBackwardShort()
   prevError = 0;  // Reset previous error for derivative
 
   unsigned long startTime = millis();
-  const unsigned long BACKUP_DURATION = 750;  // 2 seconds
+  const unsigned long BACKUP_DURATION = 500;  // 2 seconds
 
   while (millis() - startTime < BACKUP_DURATION)
   {
