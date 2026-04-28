@@ -68,7 +68,7 @@ void setup() {
 void loop() {
 
   long leftDist = readLeft();
-  delay(35);   // prevent ultrasonic crosstalk
+  delay(35);
 
   long frontDist = readFront();
   delay(35);

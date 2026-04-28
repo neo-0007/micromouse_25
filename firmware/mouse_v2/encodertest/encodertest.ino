@@ -1,4 +1,3 @@
-// ===== MOTOR + ENCODER TEST =====
 
 // ---- Motor pins ----
 #define ENA 10
